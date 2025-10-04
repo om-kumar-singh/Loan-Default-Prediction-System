@@ -197,6 +197,3 @@ If you encounter issues:
 - Add user authentication
 - Deploy to cloud platform
 
-## License
-
-This project is open source and available for educational purposes.
