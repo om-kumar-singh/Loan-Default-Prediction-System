@@ -1,0 +1,7 @@
+age,income,credit_score,loan_amount,employment_type,marital_status,education
+35,55000,720,100000,Salaried,Married,Bachelor
+28,42000,650,75000,Self-Employed,Single,High School
+45,85000,780,150000,Salaried,Married,Master
+32,38000,590,50000,Unemployed,Divorced,High School
+50,120000,810,200000,Salaried,Married,PhD
+26,30000,540,40000,Self-Employed,Single,Bachelor

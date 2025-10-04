@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loan Default Prediction System</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Loan Default Prediction System</h1>
+            <p class="subtitle">AI-Powered Risk Assessment for Loan Applications</p>
+            <nav>
+                <a href="/" class="nav-link active">Prediction</a>
+                <a href="/dashboard" class="nav-link">Dashboard</a>
+            </nav>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-button active" onclick="switchTab('single')">Single Prediction</button>
+            <button class="tab-button" onclick="switchTab('batch')">Batch Prediction</button>
+            <button class="tab-button" onclick="switchTab('comparison')">Model Comparison</button>
+        </div>
+
+        <div id="single-tab" class="tab-content active">
+            <div class="form-card">
+                <h2>Enter Customer Details</h2>
+                <form id="prediction-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="age">Age</label>
+                            <input type="number" id="age" name="age" required min="18" max="100" placeholder="e.g., 35">
+                        </div>
+                        <div class="form-group">
+                            <label for="income">Annual Income ($)</label>
+                            <input type="number" id="income" name="income" required min="0" placeholder="e.g., 50000">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="credit_score">Credit Score</label>
+                            <input type="number" id="credit_score" name="credit_score" required min="300" max="850" placeholder="e.g., 720">
+                        </div>
+                        <div class="form-group">
+                            <label for="loan_amount">Loan Amount ($)</label>
+                            <input type="number" id="loan_amount" name="loan_amount" required min="0" placeholder="e.g., 100000">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="employment_type">Employment Type</label>
+                            <select id="employment_type" name="employment_type" required>
+                                <option value="">Select...</option>
+                                <option value="Salaried">Salaried</option>
+                                <option value="Self-Employed">Self-Employed</option>
+                                <option value="Unemployed">Unemployed</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="marital_status">Marital Status</label>
+                            <select id="marital_status" name="marital_status" required>
+                                <option value="">Select...</option>
+                                <option value="Single">Single</option>
+                                <option value="Married">Married</option>
+                                <option value="Divorced">Divorced</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="education">Education Level</label>
+                            <select id="education" name="education" required>
+                                <option value="">Select...</option>
+                                <option value="High School">High School</option>
+                                <option value="Bachelor">Bachelor</option>
+                                <option value="Master">Master</option>
+                                <option value="PhD">PhD</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-primary">Predict Risk</button>
+                </form>
+
+                <div id="result-container" class="result-container hidden">
+                    <h3>Prediction Result</h3>
+                    <div class="result-card">
+                        <div class="result-item">
+                            <span class="result-label">Prediction:</span>
+                            <span id="prediction-result" class="result-value"></span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Risk Level:</span>
+                            <span id="risk-level" class="result-value"></span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Confidence:</span>
+                            <span id="confidence" class="result-value"></span>
+                        </div>
+                    </div>
+                    <div class="confidence-bar-container">
+                        <div id="confidence-bar" class="confidence-bar"></div>
+                    </div>
+                </div>
+
+                <div id="error-container" class="error-container hidden"></div>
+            </div>
+        </div>
+
+        <div id="batch-tab" class="tab-content">
+            <div class="form-card">
+                <h2>Batch Prediction</h2>
+                <p class="info-text">Upload a CSV file with customer data to predict multiple loans at once.</p>
+                <p class="info-text">Required columns: age, income, credit_score, loan_amount, employment_type, marital_status, education</p>
+
+                <div class="upload-area" id="upload-area">
+                    <input type="file" id="csv-file" accept=".csv" hidden>
+                    <label for="csv-file" class="upload-label">
+                        <div class="upload-icon">📁</div>
+                        <div class="upload-text">Click to upload CSV file</div>
+                    </label>
+                </div>
+
+                <button id="upload-btn" class="btn-primary hidden">Process Batch</button>
+
+                <div id="batch-result" class="batch-result hidden">
+                    <h3>Batch Results</h3>
+                    <div class="batch-stats">
+                        <div class="stat-card">
+                            <div class="stat-value" id="total-records">0</div>
+                            <div class="stat-label">Total Records</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="default-count">0</div>
+                            <div class="stat-label">Defaults</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="no-default-count">0</div>
+                            <div class="stat-label">No Defaults</div>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table id="batch-table">
+                            <thead>
+                                <tr>
+                                    <th>Age</th>
+                                    <th>Income</th>
+                                    <th>Credit Score</th>
+                                    <th>Loan Amount</th>
+                                    <th>Employment</th>
+                                    <th>Prediction</th>
+                                    <th>Confidence</th>
+                                </tr>
+                            </thead>
+                            <tbody id="batch-tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="comparison-tab" class="tab-content">
+            <div class="form-card">
+                <h2>Model Comparison</h2>
+                <p class="info-text">Comparison of all trained models and their accuracies</p>
+                <div id="comparison-chart" class="comparison-chart"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
